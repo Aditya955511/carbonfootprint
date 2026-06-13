@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carbon - Premium Footprint Awareness Platform</title>
+  <meta name="description" content="Track your carbon footprint, build green habits, compete with friends, and redeem real-world eco-rewards.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div id="app" class="app-container">
+    
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="header-logo">
+        <div class="logo-icon"><i class="fa-solid fa-leaf"></i></div>
+        <h1>Carbon</h1>
+      </div>
+      
+      <!-- User Progression Status -->
+      <div class="user-status-widget" id="user-status-widget" style="display: none;">
+        <div class="xp-progress-bar-container">
+          <div class="level-label"><span id="user-level-name">Sprout</span> <span class="lvl-badge">Lvl <span id="user-level-val">1</span></span></div>
+          <div class="xp-bar-bg">
+            <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div class="xp-label"><span id="user-xp-current">0</span> / <span id="user-xp-next">100</span> XP</div>
+        </div>
+        <div class="points-badge">
+          <i class="fa-solid fa-circle-nodes"></i>
+          <span><span id="user-points">0</span> pts</span>
+        </div>
+        <button id="btn-reset-app" class="btn-reset-icon" title="Reset onboarding & data"><i class="fa-solid fa-rotate-left"></i></button>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWS -->
+    <main class="app-main">
+
+      <!-- ================= LANDING / DETAILED EXPLANATION VIEW ================= -->
+      <section id="view-landing" class="view-section active-view">
+        <div class="landing-card glass-card">
+          <div class="landing-header">
+            <span class="landing-badge"><i class="fa-solid fa-earth-americas"></i> Climate Science Portal</span>
+            <h2>Understand Your Carbon Footprint</h2>
+            <p class="landing-tagline">Before entering the gamified tracker and baseline calculator, let's explore what a carbon footprint is and why reducing it matters.</p>
+          </div>
+
+          <div class="landing-tabs">
+            <button class="landing-tab-btn active" data-target="land-what"><i class="fa-solid fa-circle-info"></i> What is it?</button>
+            <button class="landing-tab-btn" data-target="land-impact"><i class="fa-solid fa-temperature-arrow-up"></i> Environmental Impact</button>
+            <button class="landing-tab-btn" data-target="land-reduction"><i class="fa-solid fa-leaf"></i> How to Reduce It</button>
+          </div>
+
+          <div class="landing-tab-contents">
+            <!-- Tab 1: What is it? -->
+            <div id="land-what" class="landing-panel active">
+              <div class="landing-panel-grid">
+                <div class="landing-panel-text">
+                  <h3>The Basics of Emissions</h3>
+                  <p>A <strong>carbon footprint</strong> represents the total amount of greenhouse gases—primarily carbon dioxide (CO₂) and methane (CH₄)—emitted directly and indirectly by our human activities.</p>
+                  <p>Every time we drive a car, purchase groceries, fly, or turn on the heating, we contribute to global emissions. To capture all gases in a single metric, scientists convert them to <strong>CO₂ equivalent (CO₂e)</strong>.</p>
+                  
+                  <h4 style="margin-top: 1rem; color: #ffffff;"><i class="fa-solid fa-network-wired" style="color: var(--color-mint); margin-right: 0.5rem;"></i> The Three Emission Scopes</h4>
+                  <ul class="landing-bullets">
+                    <li><strong>Scope 1 (Direct):</strong> Emissions from resources you own directly, e.g., burning gas in your boiler or fuel in your car.</li>
+                    <li><strong>Scope 2 (Indirect):</strong> Emissions from electricity, steam, heating, or cooling purchased and consumed by you.</li>
+                    <li><strong>Scope 3 (Value Chain):</strong> All other indirect emissions in your activities, such as buying manufactured clothes or food production.</li>
+                  </ul>
+                </div>
+                <div class="landing-panel-visual">
+                  <div class="science-glass-box">
+                    <i class="fa-solid fa-atom"></i>
+                    <span><strong>1 kg CO₂e</strong> is roughly equivalent to running a standard lightbulb for 60 hours, or driving 5 km in a gas car.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Environmental Impact -->
+            <div id="land-impact" class="landing-panel">
+              <div class="landing-panel-grid">
+                <div class="landing-panel-text">
+                  <h3>Why Carbon Emissions Matter</h3>
+                  <p>Greenhouse gases act like a thermal blanket around the Earth. The solar heat enters the atmosphere but cannot escape back to space, causing <strong>Global Warming</strong>.</p>
+                  <p>As carbon concentrations in the atmosphere hit historic records (over 420 ppm), the planet suffers severe climatic shifts:</p>
+                  <ul class="landing-bullets">
+                    <li><strong>Extreme Weather:</strong> More frequent and intense hurricanes, wildfire droughts, and catastrophic flooding.</li>
+                    <li><strong>Rising Sea Levels:</strong> Thermal expansion and melting glaciers endanger major coastal cities and island habitats.</li>
+                    <li><strong>Ocean Acidification:</strong> The oceans absorb 30% of emitted CO₂, forming carbonic acid that destroys coral reefs and marine life.</li>
+                  </ul>
+                </div>
+                <div class="landing-panel-visual">
+                  <div class="science-glass-box warning-border">
+                    <i class="fa-solid fa-temperature-high" style="color: var(--color-orange);"></i>
+                    <span>The IPCC warns that exceeding a <strong>1.5°C</strong> global average temperature rise risks triggering irreversible climate tipping points.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: How to Reduce it -->
+            <div id="land-reduction" class="landing-panel">
+              <div class="landing-panel-grid">
+                <div class="landing-panel-text">
+                  <h3>Effective Reduction Strategies</h3>
+                  <p>To curb the climate crisis, scientists stress the need to cut global emissions in half by 2030. Every individual choice helps:</p>
+                  <ul class="landing-bullets">
+                    <li><strong>Dietary Shift:</strong> Animal agriculture represents 14.5% of greenhouse emissions. Eating plant-based meals directly reduces methane emissions.</li>
+                    <li><strong>Active Mobility:</strong> Walk, cycle, or use electric trains/buses instead of single-passenger combustion cars.</li>
+                    <li><strong>Home Conservation:</strong> Shifting to renewable energy tariffs, improving insulation, and cold-washing laundry saves hundreds of CO₂ kilograms annually.</li>
+                  </ul>
+                </div>
+                <div class="landing-panel-visual">
+                  <div class="science-glass-box success-border">
+                    <i class="fa-solid fa-seedling" style="color: var(--color-mint);"></i>
+                    <span>Commuting by bicycle instead of a car saves around <strong>170g of CO₂e</strong> per kilometer traveled!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="landing-cta">
+            <h3>Unlock the Carbon Tracker & Rewards Game</h3>
+            <p>Ready to measure your footprint? Fill out our 60-second baseline quiz, build atomic green habits, climb leaderboards, and redeem earned XP points for real-world reforestation rewards.</p>
+            <button id="btn-enter-onboarding" class="btn btn-primary btn-cta-glowing">Start Baseline Quiz & Game <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ONBOARDING FLOW ================= -->
+      <section id="view-onboarding" class="view-section">
+        <div class="onboarding-card glass-card">
+          <div class="onboarding-progress">
+            <div class="onboarding-step-indicator active" data-step="1"></div>
+            <div class="onboarding-step-indicator" data-step="2"></div>
+            <div class="onboarding-step-indicator" data-step="3"></div>
+            <div class="onboarding-step-indicator" data-step="4"></div>
+          </div>
+
+          <!-- Onboarding Form Content -->
+          <div class="onboarding-slides-container">
+            <!-- Slide 1: Welcome & Diet -->
+            <div class="onboarding-slide active" id="onboarding-slide-1">
+              <span class="slide-subtitle">Step 1 of 4 • Diet Choices</span>
+              <h2>What is your primary diet?</h2>
+              <p class="slide-desc">Food production makes up about 26% of global greenhouse gas emissions. Select the option that best fits your lifestyle.</p>
+              
+              <div class="diet-options-grid">
+                <label class="diet-card-option">
+                  <input type="radio" name="ob-diet" value="vegan" required>
+                  <div class="diet-card-content">
+                    <div class="icon-wrap"><i class="fa-solid fa-carrot"></i></div>
+                    <h3>Vegan</h3>
+                    <p>Plant-only. Minimum footprint.</p>
+                  </div>
+                </label>
+                <label class="diet-card-option">
+                  <input type="radio" name="ob-diet" value="vegetarian">
+                  <div class="diet-card-content">
+                    <div class="icon-wrap"><i class="fa-solid fa-egg"></i></div>
+                    <h3>Vegetarian</h3>
+                    <p>No meat, but includes dairy/eggs.</p>
+                  </div>
+                </label>
+                <label class="diet-card-option">
+                  <input type="radio" name="ob-diet" value="flexitarian" checked>
+                  <div class="diet-card-content">
+                    <div class="icon-wrap"><i class="fa-solid fa-fish"></i></div>
+                    <h3>Flexitarian</h3>
+                    <p>Mostly plant-based, occasional meat.</p>
+                  </div>
+                </label>
+                <label class="diet-card-option">
+                  <input type="radio" name="ob-diet" value="meat-heavy">
+                  <div class="diet-card-content">
+                    <div class="icon-wrap"><i class="fa-solid fa-drumstick-bite"></i></div>
+                    <h3>High Meat</h3>
+                    <p>Regular meat intake (beef, pork, poultry).</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Slide 2: Transport -->
+            <div class="onboarding-slide" id="onboarding-slide-2">
+              <span class="slide-subtitle">Step 2 of 4 • Travel Habits</span>
+              <h2>How do you usually get around?</h2>
+              <p class="slide-desc">Transportation is a massive driver of daily carbon footprint. Adjust the sliders to represent your typical weekly travel.</p>
+              
+              <div class="sliders-list">
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span><i class="fa-solid fa-car-side"></i> Personal Car</span>
+                    <span class="slider-value"><span id="val-ob-car">40</span> km/week</span>
+                  </div>
+                  <input type="range" id="ob-car" min="0" max="500" value="40" class="input-range">
+                  <div class="slider-labels">
+                    <span>0 km</span>
+                    <span>500+ km</span>
+                  </div>
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span><i class="fa-solid fa-bus"></i> Public Transit (Bus/Train)</span>
+                    <span class="slider-value"><span id="val-ob-transit">80</span> km/week</span>
+                  </div>
+                  <input type="range" id="ob-transit" min="0" max="500" value="80" class="input-range">
+                  <div class="slider-labels">
+                    <span>0 km</span>
+                    <span>500+ km</span>
+                  </div>
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span><i class="fa-solid fa-plane"></i> Long-distance Flights</span>
+                    <span class="slider-value"><span id="val-ob-flights">10</span> hours/year</span>
+                  </div>
+                  <input type="range" id="ob-flights" min="0" max="100" value="10" class="input-range">
+                  <div class="slider-labels">
+                    <span>0 hrs</span>
+                    <span>100 hrs</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3: Housing -->
+            <div class="onboarding-slide" id="onboarding-slide-3">
+              <span class="slide-subtitle">Step 3 of 4 • Living Conditions</span>
+              <h2>Tell us about your home</h2>
+              <p class="slide-desc">Utility consumption accounts for a significant portion of home emissions. Select your housing style and primary energy source.</p>
+              
+              <div class="housing-selections">
+                <div class="form-group">
+                  <label class="form-label">Housing Type</label>
+                  <div class="housing-grid">
+                    <label class="housing-option">
+                      <input type="radio" name="ob-housing" value="apartment" checked>
+                      <div class="housing-box">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Apartment</span>
+                      </div>
+                    </label>
+                    <label class="housing-option">
+                      <input type="radio" name="ob-housing" value="house">
+                      <div class="housing-box">
+                        <i class="fa-solid fa-house"></i>
+                        <span>House</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="ob-electricity-src">Primary Electricity Source</label>
+                  <div class="select-wrapper">
+                    <select id="ob-electricity-src" class="form-select">
+                      <option value="coal-gas">Fossil Fuels (Coal/Natural Gas mix)</option>
+                      <option value="grid-average" selected>Standard Grid Average</option>
+                      <option value="renewable">100% Renewable / Green Electricity</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 4: Target Goal & Calculations -->
+            <div class="onboarding-slide" id="onboarding-slide-4">
+              <span class="slide-subtitle">Step 4 of 4 • Goal Customization</span>
+              <h2>Set your green targets</h2>
+              <p class="slide-desc">Choose your level of commitment. We will establish your custom weekly carbon budget based on this target.</p>
+              
+              <div class="goal-selection-grid">
+                <label class="goal-card-option">
+                  <input type="radio" name="ob-goal" value="warrior">
+                  <div class="goal-card-content">
+                    <div class="badge eco-badge">IPCC Paris Target</div>
+                    <h3>Eco-Warrior</h3>
+                    <p>Reduce emission budget by 50% relative to your baseline.</p>
+                  </div>
+                </label>
+                <label class="goal-card-option">
+                  <input type="radio" name="ob-goal" value="pace-setter" checked>
+                  <div class="goal-card-content">
+                    <div class="badge pace-badge">Recommended</div>
+                    <h3>Pace-Setter</h3>
+                    <p>Reduce emission budget by 20%. A balanced carbon reduction path.</p>
+                  </div>
+                </label>
+                <label class="goal-card-option">
+                  <input type="radio" name="ob-goal" value="custom">
+                  <div class="goal-card-content">
+                    <div class="badge custom-badge">Flexible</div>
+                    <h3>Custom Goals</h3>
+                    <p>Input a manual target or keep baseline tracking (10% reduction).</p>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Custom target value (hidden by default) -->
+              <div id="custom-target-group" class="slider-group" style="display: none; margin-top: 1.5rem;">
+                <div class="slider-header">
+                  <span>Custom Reduction %</span>
+                  <span class="slider-value"><span id="val-ob-custom-goal">15</span>%</span>
+                </div>
+                <input type="range" id="ob-custom-goal" min="5" max="80" value="15" class="input-range">
+              </div>
+
+              <!-- Dynamic Calculator Feedback Widget -->
+              <div class="onboarding-calculation-widget">
+                <div class="widget-header"><i class="fa-solid fa-calculator"></i> Real-time Footprint Calculation</div>
+                <div class="widget-body">
+                  <div class="calculated-row">
+                    <span>Your Baseline Carbon:</span>
+                    <strong class="highlight-orange"><span id="ob-calc-baseline">4,500</span> kg CO₂e / year</strong>
+                  </div>
+                  <div class="calculated-row">
+                    <span>Weekly Carbon Budget:</span>
+                    <strong class="highlight-green"><span id="ob-calc-weekly-budget">69.2</span> kg CO₂e / week</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Onboarding Navigation Buttons -->
+          <div class="onboarding-nav-buttons">
+            <button id="btn-ob-back" class="btn btn-secondary" disabled><i class="fa-solid fa-chevron-left"></i> Back</button>
+            <button id="btn-ob-next" class="btn btn-primary">Next <i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= MAIN APP LAYOUT (DASHBOARD HUB) ================= -->
+      <section id="view-dashboard" class="view-section">
+        
+        <!-- Navigation Tabs for SPA -->
+        <nav class="dashboard-tabs">
+          <button class="tab-button active" data-target="dash-home"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
+          <button class="tab-button" data-target="dash-ledger"><i class="fa-solid fa-book"></i> Ledger & Analytics</button>
+          <button class="tab-button" data-target="dash-habits"><i class="fa-solid fa-list-check"></i> Habits & Leagues</button>
+          <button class="tab-button" data-target="dash-shop"><i class="fa-solid fa-shop"></i> Reward Marketplace</button>
+        </nav>
+
+        <!-- DASHBOARD CONTAINER -->
+        <div class="dashboard-content-grid">
+          
+          <!-- TAB A: HOME DASHBOARD -->
+          <div id="dash-home" class="dashboard-tab-panel active">
+            
+            <div class="welcome-banner glass-card">
+              <div class="banner-text">
+                <h2>Welcome Back, Alex!</h2>
+                <p id="dashboard-encouragement">Excellent work! You are beating your weekly budget by 12%.</p>
+              </div>
+              <div class="banner-leaves"><i class="fa-solid fa-seedling"></i></div>
+            </div>
+
+            <div class="home-metrics-grid">
+              
+              <!-- Circular Progress Ring (Budget Consumption) -->
+              <div class="glass-card circular-gauge-card">
+                <h3>My Progress This Week</h3>
+                
+                <div class="gauge-container">
+                  <svg class="progress-ring-svg" width="200" height="200">
+                    <circle class="progress-ring-circle-bg" stroke="#1f2937" stroke-width="14" fill="transparent" r="80" cx="100" cy="100"/>
+                    <circle id="progress-ring-fill" class="progress-ring-circle-fill" stroke="#10b981" stroke-width="14" fill="transparent" r="80" cx="100" cy="100" stroke-dasharray="502.65" stroke-dashoffset="502.65"/>
+                  </svg>
+                  <div class="gauge-overlay-text">
+                    <div class="gauge-value"><span id="gauge-spent">0.0</span></div>
+                    <div class="gauge-unit">kg CO₂e spent</div>
+                    <div class="gauge-separator">of</div>
+                    <div class="gauge-budget"><span id="gauge-budget">0.0</span> kg</div>
+                  </div>
+                </div>
+
+                <div class="gauge-status-desc">
+                  <div class="status-marker" id="gauge-status-badge"><i class="fa-solid fa-circle-check"></i> Under Budget</div>
+                </div>
+              </div>
+
+              <!-- Eco-Equivalents Card -->
+              <div class="glass-card equivalents-card">
+                <h3>Making Math Human</h3>
+                <p class="section-desc">Your weekly net emissions are equivalent to:</p>
+                
+                <div class="equivalents-list">
+                  <div class="equiv-item">
+                    <div class="equiv-icon tree-color"><i class="fa-solid fa-tree"></i></div>
+                    <div class="equiv-details">
+                      <h4 id="equiv-trees">0.00</h4>
+                      <p>mature trees absorbing carbon for an entire year</p>
+                    </div>
+                  </div>
+                  
+                  <div class="equiv-item">
+                    <div class="equiv-icon phone-color"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <div class="equiv-details">
+                      <h4 id="equiv-phones">0</h4>
+                      <p>smartphone battery charges</p>
+                    </div>
+                  </div>
+
+                  <div class="equiv-item">
+                    <div class="equiv-icon lightbulb-color"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div class="equiv-details">
+                      <h4 id="equiv-bulbs">0.00</h4>
+                      <p>years of household lightbulbs lit continuously</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Activity Logging Section -->
+            <div class="glass-card logging-wizard-card">
+              <div class="card-header-with-tabs">
+                <h3>Log Carbon Footprint Activity</h3>
+                <div class="logger-tabs">
+                  <button class="log-tab-btn active" data-logger="log-transport"><i class="fa-solid fa-car"></i> Transport</button>
+                  <button class="log-tab-btn" data-logger="log-diet"><i class="fa-solid fa-utensils"></i> Diet</button>
+                  <button class="log-tab-btn" data-logger="log-energy"><i class="fa-solid fa-bolt"></i> Energy</button>
+                </div>
+              </div>
+
+              <div class="logger-panels-container">
+                <!-- PANEL: TRANSPORT -->
+                <form id="log-transport" class="logger-form-panel active">
+                  <div class="form-row-grid">
+                    <div class="form-group">
+                      <label class="form-label" for="trans-type">Vehicle / Commute Type</label>
+                      <div class="select-wrapper">
+                        <select id="trans-type" class="form-select" required>
+                          <option value="sedan-gas">Petrol/Gasoline Sedan</option>
+                          <option value="sedan-diesel">Diesel Sedan</option>
+                          <option value="suv-gas">Petrol/Gasoline SUV</option>
+                          <option value="ev">Electric Vehicle (EV)</option>
+                          <option value="bus">Public Bus</option>
+                          <option value="subway">Subway Train</option>
+                          <option value="train">Long-distance Rail</option>
+                          <option value="bicycle">Bicycle / Walk</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="trans-distance">Distance Traveled (km)</label>
+                      <input type="number" id="trans-distance" class="form-input" min="0" placeholder="e.g. 15" required>
+                    </div>
+                  </div>
+
+                  <div class="logger-calc-preview">
+                    <span>Footprint Generated:</span>
+                    <strong id="preview-transport-footprint">0.00 kg CO₂e</strong>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-submit-log"><i class="fa-solid fa-plus"></i> Add to Carbon Ledger</button>
+                </form>
+
+                <!-- PANEL: DIET -->
+                <form id="log-diet" class="logger-form-panel">
+                  <div class="form-row-grid">
+                    <div class="form-group">
+                      <label class="form-label" for="diet-item">Food Item Class</label>
+                      <div class="select-wrapper">
+                        <select id="diet-item" class="form-select" required>
+                          <option value="beef">Beef (High impact: 27 kg CO₂e/kg)</option>
+                          <option value="pork">Pork (7.2 kg CO₂e/kg)</option>
+                          <option value="poultry">Poultry/Chicken (5.7 kg CO₂e/kg)</option>
+                          <option value="cheese">Cheese / Dairy (13.5 kg CO₂e/kg)</option>
+                          <option value="tofu">Tofu (Low impact: 2.0 kg CO₂e/kg)</option>
+                          <option value="rice">Rice (4.0 kg CO₂e/kg)</option>
+                          <option value="vegetables">Local Vegetables (0.5 kg CO₂e/kg)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="diet-quantity">Mass of Food (kg)</label>
+                      <input type="number" id="diet-quantity" class="form-input" step="0.05" min="0" placeholder="e.g. 0.5" required>
+                    </div>
+                  </div>
+
+                  <div class="logger-calc-preview">
+                    <span>Footprint Generated:</span>
+                    <strong id="preview-diet-footprint">0.00 kg CO₂e</strong>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-submit-log"><i class="fa-solid fa-plus"></i> Add to Carbon Ledger</button>
+                </form>
+
+                <!-- PANEL: ENERGY -->
+                <form id="log-energy" class="logger-form-panel">
+                  <div class="form-row-grid">
+                    <div class="form-group">
+                      <label class="form-label" for="energy-utility">Utility Category</label>
+                      <div class="select-wrapper">
+                        <select id="energy-utility" class="form-select" required>
+                          <option value="elec-standard">Electricity (Standard Grid Average)</option>
+                          <option value="elec-clean">Electricity (Green/Renewable Tariffs)</option>
+                          <option value="gas-heating">Natural Gas Heating</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="energy-quantity">Quantity (kWh / m³)</label>
+                      <input type="number" id="energy-quantity" class="form-input" min="0" placeholder="e.g. 20" required>
+                    </div>
+                  </div>
+
+                  <div class="logger-calc-preview">
+                    <span>Footprint Generated:</span>
+                    <strong id="preview-energy-footprint">0.00 kg CO₂e</strong>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-submit-log"><i class="fa-solid fa-plus"></i> Add to Carbon Ledger</button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB B: LEDGER & ANALYTICS -->
+          <div id="dash-ledger" class="dashboard-tab-panel">
+            
+            <div class="analytics-charts-grid">
+              <div class="glass-card chart-card">
+                <h3>Footprint by Category</h3>
+                <div class="chart-wrapper">
+                  <canvas id="chart-categories"></canvas>
+                </div>
+              </div>
+              <div class="glass-card chart-card">
+                <h3>Weekly Carbon Trends</h3>
+                <div class="chart-wrapper">
+                  <canvas id="chart-trends"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ledger Table -->
+            <div class="glass-card ledger-list-card">
+              <div class="ledger-header">
+                <h3>Carbon Ledger Records</h3>
+                <button id="btn-clear-ledger" class="btn btn-secondary-danger"><i class="fa-solid fa-trash-can"></i> Clear Ledger</button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="ledger-table" id="ledger-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Category</th>
+                      <th>Activity details</th>
+                      <th>Raw Amount</th>
+                      <th>Emissions</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ledger-rows">
+                    <!-- Dynamic Rows Insertion -->
+                  </tbody>
+                </table>
+              </div>
+              <div id="ledger-empty-msg" class="empty-state-message">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <p>No carbon entries logged yet. Head over to the Dashboard tab to input your transport, diet, or utility footprint.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB C: HABITS & CHALLENGES -->
+          <div id="dash-habits" class="dashboard-tab-panel">
+            
+            <div class="habits-split-grid">
+              
+              <!-- Habit checklists -->
+              <div class="glass-card habits-card">
+                <div class="habits-title-header">
+                  <h3>Daily Habit Checklist</h3>
+                  <div class="streak-badge"><i class="fa-solid fa-fire"></i> <span id="habit-streak-count">5</span> Day Streak</div>
+                </div>
+                <p class="section-desc">Complete daily atomic habits to protect your streak, reduce your footprint score, and earn eco-points!</p>
+                
+                <div class="habits-list">
+                  <div class="habit-item">
+                    <label class="habit-checkbox-label">
+                      <input type="checkbox" id="habit-carfree" class="habit-checkbox">
+                      <span class="custom-checkbox"></span>
+                      <div class="habit-details">
+                        <h4>Commuted Without Car</h4>
+                        <p class="habit-reward-label">+15 XP • Saves 3.2 kg CO₂e</p>
+                      </div>
+                    </label>
+                  </div>
+                  
+                  <div class="habit-item">
+                    <label class="habit-checkbox-label">
+                      <input type="checkbox" id="habit-plantbased" class="habit-checkbox">
+                      <span class="custom-checkbox"></span>
+                      <div class="habit-details">
+                        <h4>Ate a Plant-Based Meal</h4>
+                        <p class="habit-reward-label">+10 XP • Saves 5.0 kg CO₂e</p>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div class="habit-item">
+                    <label class="habit-checkbox-label">
+                      <input type="checkbox" id="habit-coldcycle" class="habit-checkbox">
+                      <span class="custom-checkbox"></span>
+                      <div class="habit-details">
+                        <h4>Washed Clothes on Cold Cycle</h4>
+                        <p class="habit-reward-label">+5 XP • Saves 0.8 kg CO₂e</p>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div class="habit-item">
+                    <label class="habit-checkbox-label">
+                      <input type="checkbox" id="habit-noplastic" class="habit-checkbox">
+                      <span class="custom-checkbox"></span>
+                      <div class="habit-details">
+                        <h4>Avoided Single-Use Plastics</h4>
+                        <p class="habit-reward-label">+5 XP • Saves 0.2 kg CO₂e</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Leaderboard -->
+              <div class="glass-card leaderboard-card">
+                <h3>Eco-Friends Leaderboard</h3>
+                <p class="section-desc">Compete with friends to see who saves the most carbon this week.</p>
+                
+                <div class="leaderboard-list">
+                  <div class="leaderboard-item">
+                    <span class="rank-pos">1</span>
+                    <div class="rank-avatar bg-gold"><i class="fa-solid fa-medal"></i></div>
+                    <div class="rank-info">
+                      <strong>Sarah M.</strong>
+                      <span>Level 3 Oak</span>
+                    </div>
+                    <div class="rank-score">120 pts</div>
+                  </div>
+                  
+                  <div class="leaderboard-item user-highlight" id="leaderboard-user-item">
+                    <span class="rank-pos">2</span>
+                    <div class="rank-avatar bg-silver"><i class="fa-solid fa-crown"></i></div>
+                    <div class="rank-info">
+                      <strong>You (Alex)</strong>
+                      <span id="leaderboard-user-level">Level 1 Sprout</span>
+                    </div>
+                    <div class="rank-score"><span id="leaderboard-user-points">0</span> pts</div>
+                  </div>
+
+                  <div class="leaderboard-item">
+                    <span class="rank-pos">3</span>
+                    <div class="rank-avatar bg-bronze"><i class="fa-solid fa-award"></i></div>
+                    <div class="rank-info">
+                      <strong>Daniel K.</strong>
+                      <span>Level 2 Sapling</span>
+                    </div>
+                    <div class="rank-score">90 pts</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Active Challenges section -->
+            <div class="glass-card active-challenges-card">
+              <h3>Group Challenges</h3>
+              <p class="section-desc">Join time-bound community challenges for high-score XP modifiers.</p>
+              
+              <div class="challenges-grid">
+                <div class="challenge-item-card active-challenge">
+                  <div class="challenge-badge">Active</div>
+                  <h4>7-Day No-Red-Meat Challenge</h4>
+                  <p>Commit to avoiding all beef, pork, and high-impact meats for 7 days.</p>
+                  <div class="challenge-progress-bar">
+                    <div class="fill-bar" style="width: 57%;"></div>
+                  </div>
+                  <div class="challenge-footer">
+                    <span>Progress: 4/7 Days completed</span>
+                    <span class="reward-points">+50 XP</span>
+                  </div>
+                </div>
+
+                <div class="challenge-item-card locked-challenge">
+                  <div class="challenge-badge lock-badge"><i class="fa-solid fa-lock"></i> Unlocks Lvl 2</div>
+                  <h4>Zero-Commute Transport Week</h4>
+                  <p>Walk, bike, or use remote work settings to achieve zero private transit carbon for 5 straight days.</p>
+                  <div class="challenge-footer">
+                    <span>Level 2 required to join</span>
+                    <span class="reward-points">+100 XP</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB D: REWARD SHOP -->
+          <div id="dash-shop" class="dashboard-tab-panel">
+            
+            <div class="shop-intro-header">
+              <h2>Green Rewards Marketplace</h2>
+              <p>Exchange the points you earned through eco-habits and streak completions for real-world impact rewards and discounts.</p>
+            </div>
+
+            <div class="shop-grid">
+              
+              <!-- Reward Card 1 -->
+              <div class="glass-card reward-item-card">
+                <div class="reward-image-placeholder tree-planting">
+                  <i class="fa-solid fa-tree-deciduous"></i>
+                </div>
+                <div class="reward-card-body">
+                  <span class="reward-vendor">Eden Reforestation Projects</span>
+                  <h4>Plant 1 Real Tree in Kenya</h4>
+                  <p>Fund the planting, nursing, and protection of one indigenous tree in reforestation areas in Kenya.</p>
+                  <div class="reward-card-footer">
+                    <span class="reward-cost">100 XP Points</span>
+                    <button class="btn btn-primary btn-redeem" data-cost="100" data-reward-id="tree-kenya">Redeem</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reward Card 2 -->
+              <div class="glass-card reward-item-card">
+                <div class="reward-image-placeholder organic-soap">
+                  <i class="fa-solid fa-soap"></i>
+                </div>
+                <div class="reward-card-body">
+                  <span class="reward-vendor">Eco-Clean Organics</span>
+                  <h4>Free Handmade Organic Soap Bar</h4>
+                  <p>Get a zero-waste, vegan organic soap bar made with cold-pressed natural ingredients. Free shipping.</p>
+                  <div class="reward-card-footer">
+                    <span class="reward-cost">75 XP Points</span>
+                    <button class="btn btn-primary btn-redeem" data-cost="75" data-reward-id="soap-bar">Redeem</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reward Card 3 -->
+              <div class="glass-card reward-item-card">
+                <div class="reward-image-placeholder apparel-discount">
+                  <i class="fa-solid fa-shirt"></i>
+                </div>
+                <div class="reward-card-body">
+                  <span class="reward-vendor">Thread-Lightly Apparel</span>
+                  <h4>15% Discount on Sustainable Gear</h4>
+                  <p>Get a voucher valid site-wide for ethical organic cotton activewear and eco-designed outdoor gear.</p>
+                  <div class="reward-card-footer">
+                    <span class="reward-cost">50 XP Points</span>
+                    <button class="btn btn-primary btn-redeem" data-cost="50" data-reward-id="apparel-discount">Redeem</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reward Card 4 -->
+              <div class="glass-card reward-item-card">
+                <div class="reward-image-placeholder plastic-removal">
+                  <i class="fa-solid fa-trash-arrow-up"></i>
+                </div>
+                <div class="reward-card-body">
+                  <span class="reward-vendor">CleanOceans Campaign</span>
+                  <h4>Remove 1kg Plastic from Oceans</h4>
+                  <p>Fund cleanups to recover and recycle one kilogram of plastic waste from marine and river environments.</p>
+                  <div class="reward-card-footer">
+                    <span class="reward-cost">80 XP Points</span>
+                    <button class="btn btn-primary btn-redeem" data-cost="80" data-reward-id="ocean-plastic">Redeem</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer-nav">
+      <p>&copy; 2026 Carbon Footprint Awareness Platform. Powered by GHG Protocol and Climatiq Emission Factors.</p>
+    </footer>
+
+  </div>
+
+  <!-- Notification Dialog popup -->
+  <div id="toast-notification" class="toast-popup">
+    <div class="toast-content">
+      <span class="toast-icon"><i class="fa-solid fa-circle-check"></i></span>
+      <span class="toast-msg">Activity successfully logged!</span>
+    </div>
+  </div>
+
+  <!-- Reward Redeem Success Modal -->
+  <div id="reward-modal" class="modal-backdrop">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3>Reward Successfully Redeemed!</h3>
+        <button class="modal-close" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <p>You have successfully exchanged your XP points for:</p>
+        <h4 id="modal-reward-name">Plant 1 Real Tree in Kenya</h4>
+        <div class="coupon-box">
+          <span class="coupon-label">Eco-Voucher Code:</span>
+          <span class="coupon-code" id="modal-coupon-code">CARB-8973-ECO</span>
+        </div>
+        <p class="modal-note">A confirmation email along with instruction details has been sent to your account.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btn-modal-ok">Awesome</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Code -->
+  <script src="app.js"></script>
+</body>
+</html>
