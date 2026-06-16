@@ -2336,3 +2336,85 @@ h6 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   AUTHENTICATION CARD & LOGIN STYLING
+   ========================================================================== */
+.auth-card {
+  max-width: 460px;
+  margin: 4rem auto;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon-auth {
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 20px rgba(46, 125, 50, 0.3) !important;
+}
+
+.auth-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-error-banner {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  color: #ef4444;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.auth-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: var(--color-slate-400);
+}
+
+.btn-link {
+  background: transparent;
+  border: none;
+  color: var(--color-emerald);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: var(--transition-fast);
+}
+
+.btn-link:hover {
+  color: #2b612e;
+}
+
+.btn-logout-icon {
+  background: transparent;
+  border: none;
+  color: var(--color-slate-400);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+}
+
+.btn-logout-icon:hover {
+  color: var(--color-coral);
+  transform: translateX(2px);
+}

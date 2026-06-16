@@ -55,6 +55,15 @@ let state = { ...DEFAULT_STATE };
 let categoryChart = null;
 let trendChart = null;
 
+let token = localStorage.getItem('carbon_token') || null;
+
+function getAuthHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+}
+
 // --- DOM References ---
 const appContainer = document.getElementById('app');
 
@@ -125,7 +134,7 @@ let currentObSlide = 1;
 
 // --- Init Application ---
 document.addEventListener('DOMContentLoaded', () => {
-  loadState();
+  initAuthListeners();
   initLandingListeners();
   initOnboardingListeners();
   initDashboardTabs();
@@ -133,34 +142,188 @@ document.addEventListener('DOMContentLoaded', () => {
   initHabitChecklistListeners();
   initMarketplaceListeners();
   initGlobalListeners();
-  setupUI();
+
+  // Try loading state if token exists, otherwise redirect to auth screen
+  if (token) {
+    loadState();
+  } else {
+    showAuthView();
+  }
 });
 
-// --- State Management ---
-function loadState() {
-  const saved = localStorage.getItem('carbon_state');
-  if (saved) {
-    try {
-      state = JSON.parse(saved);
-      state.userProfile = state.userProfile || { email: "alex@carbon-aware.org" };
-      state.habitsChecked = state.habitsChecked || { ...DEFAULT_STATE.habitsChecked };
-    } catch (e) {
-      console.error("Failed parsing localStorage state. Resetting to default.", e);
-      state = { ...DEFAULT_STATE };
-    }
-  } else {
-    state = { ...DEFAULT_STATE };
+// --- Authentication Flow Logic ---
+let authMode = 'login'; // 'login' or 'signup'
+
+function initAuthListeners() {
+  const btnAuthToggle = document.getElementById('btn-auth-toggle');
+  const authForm = document.getElementById('auth-form');
+  const btnLogout = document.getElementById('btn-logout');
+
+  if (btnAuthToggle) {
+    btnAuthToggle.addEventListener('click', () => {
+      const authTitle = document.querySelector('.auth-header h2');
+      const authSubtitle = document.getElementById('auth-subtitle');
+      const authToggleDesc = document.getElementById('auth-toggle-desc');
+      const btnSubmitSpan = document.querySelector('#btn-auth-submit span');
+      const btnSubmitIcon = document.querySelector('#btn-auth-submit i');
+      
+      document.getElementById('auth-error-msg').style.display = 'none';
+
+      if (authMode === 'login') {
+        authMode = 'signup';
+        authTitle.innerText = 'Create Account';
+        authSubtitle.innerText = 'Sign up to calculate your baseline footprint and join green leagues.';
+        authToggleDesc.innerText = 'Already have an account?';
+        btnAuthToggle.innerText = 'Log In';
+        btnSubmitSpan.innerText = 'Sign Up';
+        btnSubmitIcon.className = 'fa-solid fa-user-plus';
+      } else {
+        authMode = 'login';
+        authTitle.innerText = 'Welcome to Carbon';
+        authSubtitle.innerText = 'Log in or create a secure account to track emissions and earn real eco-rewards.';
+        authToggleDesc.innerText = "Don't have an account yet?";
+        btnAuthToggle.innerText = 'Sign Up';
+        btnSubmitSpan.innerText = 'Log In';
+        btnSubmitIcon.className = 'fa-solid fa-arrow-right-to-bracket';
+      }
+    });
+  }
+
+  if (authForm) {
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const errorMsgBanner = document.getElementById('auth-error-msg');
+      const errorMsgText = document.getElementById('auth-error-text');
+
+      errorMsgBanner.style.display = 'none';
+
+      try {
+        const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          errorMsgText.innerText = data.error || 'Authentication failed';
+          errorMsgBanner.style.display = 'flex';
+          return;
+        }
+
+        // Save token
+        token = data.token;
+        localStorage.setItem('carbon_token', token);
+        
+        showToast(authMode === 'login' ? "Welcome back!" : "Account registered successfully!");
+        
+        // Clear inputs
+        document.getElementById('auth-email').value = '';
+        document.getElementById('auth-password').value = '';
+        
+        // Load state and redirect
+        await loadState();
+      } catch (err) {
+        console.error(err);
+        errorMsgText.innerText = 'Server connection failed';
+        errorMsgBanner.style.display = 'flex';
+      }
+    });
+  }
+
+  if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+      logout();
+    });
   }
 }
 
-function saveState() {
-  localStorage.setItem('carbon_state', JSON.stringify(state));
+function logout(isExpired = false) {
+  token = null;
+  localStorage.removeItem('carbon_token');
+  state = { ...DEFAULT_STATE };
+  
+  showToast(isExpired ? "Session expired. Please log in again." : "Logged out successfully.");
+  showAuthView();
 }
 
-function resetApp() {
+function showAuthView() {
+  // Hide all views except auth
+  document.querySelectorAll('.view-section').forEach(view => {
+    view.classList.remove('active-view');
+  });
+  document.getElementById('view-auth').classList.add('active-view');
+  userStatusWidget.style.display = 'none';
+}
+
+// --- State Management ---
+async function loadState() {
+  if (!token) {
+    showAuthView();
+    return;
+  }
+  try {
+    const res = await fetch('/api/user/state', {
+      headers: getAuthHeaders()
+    });
+    
+    if (res.status === 401 || res.status === 403) {
+      logout(true); // Token expired
+      return;
+    }
+    
+    if (!res.ok) throw new Error('Failed to load state');
+    state = await res.json();
+    
+    // Also fetch ledger records
+    const ledgerRes = await fetch('/api/ledger', {
+      headers: getAuthHeaders()
+    });
+    
+    if (ledgerRes.ok) {
+      state.ledger = await ledgerRes.json();
+    }
+    
+    setupUI();
+  } catch (e) {
+    console.error(e);
+    showToast("Error connecting to server. Please try again.");
+    showAuthView();
+  }
+}
+
+async function saveState() {
+  if (!token) return;
+  try {
+    await fetch('/api/user/state', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(state)
+    });
+  } catch (e) {
+    console.error('Failed to sync state to server:', e);
+  }
+}
+
+async function resetApp() {
   if (confirm("Are you sure you want to reset all your data, ledger logs, and level progress?")) {
     state = { ...DEFAULT_STATE, ledger: [] };
-    saveState();
+    state.onboarded = false;
+    await saveState();
+
+    if (token) {
+      try {
+        await fetch('/api/ledger/clear', {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
     location.reload();
   }
 }
@@ -168,6 +331,10 @@ function resetApp() {
 // --- Setup UI based on State ---
 function setupUI() {
   const viewLanding = document.getElementById('view-landing');
+  const viewAuth = document.getElementById('view-auth');
+
+  if (viewAuth) viewAuth.classList.remove('active-view');
+
   if (state.onboarded) {
     viewOnboarding.classList.remove('active-view');
     if (viewLanding) viewLanding.classList.remove('active-view');
@@ -628,7 +795,7 @@ function initLoggerFormListeners() {
 }
 
 // --- Ledger Actions & Visualizations ---
-function addLedgerEntry(category, subCategory, amount, unit, emissions, label) {
+async function addLedgerEntry(category, subCategory, amount, unit, emissions, label) {
   const newEntry = {
     id: 'id_' + Math.random().toString(36).substring(2, 11),
     date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -641,9 +808,21 @@ function addLedgerEntry(category, subCategory, amount, unit, emissions, label) {
   };
 
   state.ledger.unshift(newEntry); // add to top
-  saveState();
   updateDashboardSummary();
   updateLedgerTable();
+
+  if (token) {
+    try {
+      await fetch('/api/ledger', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(newEntry)
+      });
+      saveState();
+    } catch (e) {
+      console.error('Failed to save entry to server:', e);
+    }
+  }
 }
 
 function updateLedgerTable() {
@@ -696,12 +875,11 @@ function updateLedgerTable() {
   }
 }
 
-function removeLedgerEntry(id) {
+async function removeLedgerEntry(id) {
   // Check if we are deleting an offset created by a checkbox to uncheck it
   const deletedItem = state.ledger.find(item => item.id === id);
   
   state.ledger = state.ledger.filter(item => item.id !== id);
-  saveState();
   updateDashboardSummary();
   updateLedgerTable();
   showToast("Record removed from ledger.");
@@ -722,6 +900,18 @@ function removeLedgerEntry(id) {
       removeXP(5);
     }
     updateHabitChecklistUI();
+  }
+
+  if (token) {
+    try {
+      await fetch(`/api/ledger/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+      saveState();
+    } catch (e) {
+      console.error('Failed to delete entry on server:', e);
+    }
   }
 }
 
@@ -837,7 +1027,7 @@ function initMarketplaceListeners() {
 function initGlobalListeners() {
   btnResetApp.addEventListener('click', resetApp);
   
-  btnClearLedger.addEventListener('click', () => {
+  btnClearLedger.addEventListener('click', async () => {
     if (confirm("Are you sure you want to clear your current activity ledger? This will reset your weekly score, but keep your level profile XP intact.")) {
       state.ledger = [];
       // reset habit checkmarks since they are linked to ledger entries
@@ -847,12 +1037,23 @@ function initGlobalListeners() {
         coldcycle: false,
         noplastic: false
       };
-      saveState();
       updateDashboardSummary();
       updateLedgerTable();
       updateHabitChecklistUI();
       initCharts();
       showToast("Ledger entries cleared.");
+
+      if (token) {
+        try {
+          await fetch('/api/ledger/clear', {
+            method: 'POST',
+            headers: getAuthHeaders()
+          });
+          saveState();
+        } catch (e) {
+          console.error('Failed to clear ledger on server:', e);
+        }
+      }
     }
   });
 }

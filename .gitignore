@@ -16,3 +16,7 @@ $RECYCLE.BIN/
 # Temp files and logs
 *.tmp
 *.log
+
+# Project-specific ignored files
+carbon.db
+node_modules/

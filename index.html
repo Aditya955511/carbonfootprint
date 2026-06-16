@@ -41,14 +41,52 @@
           <span><span id="user-points">0</span> pts</span>
         </div>
         <button id="btn-reset-app" class="btn-reset-icon" title="Reset onboarding & data"><i class="fa-solid fa-rotate-left"></i></button>
+        <button id="btn-logout" class="btn-logout-icon" title="Logout account"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
       </div>
     </header>
 
     <!-- MAIN VIEWS -->
     <main class="app-main">
 
+      <!-- ================= AUTHENTICATION VIEW (LOGIN / REGISTER) ================= -->
+      <section id="view-auth" class="view-section active-view">
+        <div class="onboarding-card auth-card glass-card">
+          <div class="auth-header">
+            <div class="logo-icon logo-icon-auth"><i class="fa-solid fa-leaf"></i></div>
+            <h2>Welcome to Carbon</h2>
+            <p id="auth-subtitle">Log in or create a secure account to track emissions and earn real eco-rewards.</p>
+          </div>
+
+          <form id="auth-form" class="auth-form-body">
+            <div class="form-group">
+              <label class="form-label" for="auth-email">Email Address</label>
+              <input type="email" id="auth-email" class="form-input" placeholder="e.g. alex@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="auth-password">Password</label>
+              <input type="password" id="auth-password" class="form-input" placeholder="Enter password (min 6 characters)" minlength="6" required>
+            </div>
+
+            <div id="auth-error-msg" class="auth-error-banner" style="display: none;">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span id="auth-error-text">Invalid credentials</span>
+            </div>
+
+            <button type="submit" id="btn-auth-submit" class="btn btn-primary btn-submit-log" style="margin-top: 0.5rem;">
+              <span>Log In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+          </form>
+
+          <div class="auth-toggle">
+            <span id="auth-toggle-desc">Don't have an account yet?</span>
+            <button id="btn-auth-toggle" class="btn-link">Sign Up</button>
+          </div>
+        </div>
+      </section>
+
       <!-- ================= LANDING / DETAILED EXPLANATION VIEW ================= -->
-      <section id="view-landing" class="view-section active-view">
+      <section id="view-landing" class="view-section">
         <div class="landing-card glass-card">
           <div class="landing-header">
             <span class="landing-badge"><i class="fa-solid fa-earth-americas"></i> Climate Science Portal</span>
