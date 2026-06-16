@@ -668,16 +668,16 @@ function updateLedgerTable() {
       const displayEmissions = isOffset ? `-${Math.abs(item.emissions).toFixed(2)}` : `+${item.emissions.toFixed(2)}`;
       
       tr.innerHTML = `
-        <td>${item.date}</td>
-        <td>
+        <td data-label="Date">${item.date}</td>
+        <td data-label="Category">
           <span class="category-badge-ui ${badgeClass}">
             <i class="fa-solid ${icon}"></i> ${item.category.toUpperCase()}
           </span>
         </td>
-        <td>${item.label}</td>
-        <td>${item.amount} ${item.unit}</td>
-        <td class="cell-emissions ${isOffset ? 'is-offset' : ''}">${displayEmissions} kg</td>
-        <td>
+        <td data-label="Activity">${item.label}</td>
+        <td data-label="Amount">${item.amount} ${item.unit}</td>
+        <td data-label="Emissions" class="cell-emissions ${isOffset ? 'is-offset' : ''}">${displayEmissions} kg</td>
+        <td data-label="Action">
           <button class="btn-delete-row" data-id="${item.id}" title="Remove entry">
             <i class="fa-solid fa-trash-can"></i>
           </button>
@@ -917,7 +917,7 @@ function initCharts() {
           '#38bdf8', // Blue
           '#fca5a5', // Rose/Red
           '#fde047', // Yellow
-          '#34d399'  // Mint
+          '#2ECC71'  // Accent
         ],
         borderWidth: 1,
         borderColor: '#1e293b'
@@ -963,7 +963,7 @@ function initCharts() {
         {
           label: 'Daily Footprint (kg CO2e)',
           data: trendDataValues,
-          backgroundColor: 'rgba(16, 185, 129, 0.45)',
+          backgroundColor: 'rgba(46, 125, 50, 0.45)',
           borderColor: 'var(--color-emerald)',
           borderWidth: 1.5,
           borderRadius: 4
