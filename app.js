@@ -57,6 +57,14 @@ let trendChart = null;
 
 let token = localStorage.getItem('carbon_token') || null;
 
+// Base API URL config
+// If running locally, point to port 3000 where server.js runs. 
+// If deployed, use relative paths (empty string) unless a specific backend domain is configured.
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
+  ? 'http://localhost:3000'
+  : ''; 
+
+
 function getAuthHeaders() {
   return {
     'Content-Type': 'application/json',
@@ -201,7 +209,7 @@ function initAuthListeners() {
 
       try {
         const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
-        const res = await fetch(endpoint, {
+        const res = await fetch(API_BASE_URL + endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -266,7 +274,7 @@ async function loadState() {
     return;
   }
   try {
-    const res = await fetch('/api/user/state', {
+    const res = await fetch(API_BASE_URL + '/api/user/state', {
       headers: getAuthHeaders()
     });
     
@@ -279,7 +287,7 @@ async function loadState() {
     state = await res.json();
     
     // Also fetch ledger records
-    const ledgerRes = await fetch('/api/ledger', {
+    const ledgerRes = await fetch(API_BASE_URL + '/api/ledger', {
       headers: getAuthHeaders()
     });
     
@@ -298,7 +306,7 @@ async function loadState() {
 async function saveState() {
   if (!token) return;
   try {
-    await fetch('/api/user/state', {
+    await fetch(API_BASE_URL + '/api/user/state', {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(state)
@@ -316,7 +324,7 @@ async function resetApp() {
 
     if (token) {
       try {
-        await fetch('/api/ledger/clear', {
+        await fetch(API_BASE_URL + '/api/ledger/clear', {
           method: 'POST',
           headers: getAuthHeaders()
         });
@@ -813,7 +821,7 @@ async function addLedgerEntry(category, subCategory, amount, unit, emissions, la
 
   if (token) {
     try {
-      await fetch('/api/ledger', {
+      await fetch(API_BASE_URL + '/api/ledger', {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(newEntry)
@@ -904,7 +912,7 @@ async function removeLedgerEntry(id) {
 
   if (token) {
     try {
-      await fetch(`/api/ledger/${id}`, {
+      await fetch(API_BASE_URL + `/api/ledger/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
@@ -1045,7 +1053,7 @@ function initGlobalListeners() {
 
       if (token) {
         try {
-          await fetch('/api/ledger/clear', {
+          await fetch(API_BASE_URL + '/api/ledger/clear', {
             method: 'POST',
             headers: getAuthHeaders()
           });
