@@ -57,12 +57,9 @@ let trendChart = null;
 
 let token = localStorage.getItem('carbon_token') || null;
 
-// Base API URL config
-// If running locally, point to port 3000 where server.js runs. 
-// If deployed, use relative paths (empty string) unless a specific backend domain is configured.
 const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
   ? 'http://localhost:3000'
-  : ''; 
+  : 'https://carbon-backend.onrender.com'; // <-- REPLACE with your Render Web Service URL
 
 
 function getAuthHeaders() {
