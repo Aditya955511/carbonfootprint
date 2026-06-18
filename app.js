@@ -215,13 +215,21 @@ function initAuthListeners() {
           body: JSON.stringify({ email, password })
         });
 
-        const data = await res.json();
         if (!res.ok) {
-          errorMsgText.innerText = data.error || 'Authentication failed';
+          let errorMsg = 'Authentication failed';
+          try {
+            const data = await res.json();
+            errorMsg = data.error || errorMsg;
+          } catch (_) {
+            errorMsg = `Server error: ${res.status} ${res.statusText}`;
+          }
+          errorMsgText.innerText = errorMsg;
           errorMsgBanner.style.display = 'flex';
           return;
         }
 
+        const data = await res.json();
+        
         // Save token
         token = data.token;
         localStorage.setItem('carbon_token', token);
