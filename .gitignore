@@ -20,3 +20,6 @@ $RECYCLE.BIN/
 # Project-specific ignored files
 carbon.db
 node_modules/
+education-portal/
+
+
